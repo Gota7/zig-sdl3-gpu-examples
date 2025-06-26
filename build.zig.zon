@@ -1,0 +1,16 @@
+.{
+    .name = .sdl3_gpu_examples,
+    .version = "0.0.0",
+    .dependencies = .{
+        .sdl3 = .{
+            .url = "https://github.com/Gota7/zig-sdl3/archive/refs/heads/master.zip",
+            .hash = "sdl3-0.0.1-NmT1QxgLHADH3iLiD44LpAGHGP1M5vJ5cHFfaylBBXfK",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+    .fingerprint = 0xeca6af4537fca181,
+}
