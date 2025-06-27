@@ -55,7 +55,7 @@ pub fn init() !common.Context {
         ctx.device,
         .vertex,
         frag_shader_bin,
-        0,
+        1,
         0,
         0,
         0,

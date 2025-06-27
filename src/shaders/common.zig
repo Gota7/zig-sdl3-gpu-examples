@@ -267,19 +267,18 @@ pub fn sampler2d(
     comptime set: u32,
     comptime bind: u32,
 ) Sampler2d {
-    const ret = asm volatile (
-        \\%float       = OpTypeFloat 32
-        \\%img         = OpTypeImage %float 2D 0 0 0 1 Unknown
-        \\%sampler     = OpTypeSampledImage %img
-        \\%sampler_ptr = OpTypePointer UniformConstant %sampler
-        \\%tex         = OpVariable %sampler_ptr UniformConstant
-        \\               OpDecorate %tex DescriptorSet $set
-        \\               OpDecorate %tex Binding $bind
+    return asm volatile (
+        \\%float        = OpTypeFloat 32
+        \\%img_type     = OpTypeImage %float 2D 0 0 0 1 Unknown
+        \\%sampler_type = OpTypeSampledImage %img_type
+        \\%sampler_ptr  = OpTypePointer UniformConstant %sampler_type
+        \\%tex          = OpVariable %sampler_ptr UniformConstant
+        \\                OpDecorate %tex DescriptorSet $set
+        \\                OpDecorate %tex Binding $bind
         : [tex] "" (-> Sampler2d),
         : [set] "c" (set),
           [bind] "c" (bind),
     );
-    return ret;
 }
 
 /// Use a sampler2d to sample texture data.
@@ -294,10 +293,10 @@ pub inline fn textureSampler2d(
     sampler: Sampler2d,
     uv: @Vector(2, f32),
 ) @Vector(4, f32) {
-    const ret = asm volatile (
+    return asm volatile (
         \\%float          = OpTypeFloat 32
-        \\%img            = OpTypeImage %float 2D 0 0 0 1 Unknown
-        \\%sampler_type   = OpTypeSampledImage %img
+        \\%img_type       = OpTypeImage %float 2D 0 0 0 1 Unknown
+        \\%sampler_type   = OpTypeSampledImage %img_type
         \\%v4float        = OpTypeVector %float 4
         \\%loaded_sampler = OpLoad %sampler_type %sampler
         \\%ret            = OpImageSampleImplicitLod %v4float %loaded_sampler %uv
@@ -305,5 +304,4 @@ pub inline fn textureSampler2d(
         : [sampler] "" (sampler),
           [uv] "" (uv),
     );
-    return ret;
 }

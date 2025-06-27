@@ -42,7 +42,7 @@ pub fn loadImage(
 ) !sdl3.surface.Surface {
     const image_data_raw = try sdl3.surface.Surface.initFromBmpIo(try sdl3.io_stream.Stream.initFromConstMem(bmp), true);
     defer image_data_raw.deinit();
-    return image_data_raw.convertFormat(sdl3.pixels.Format.packed_bgra_8_8_8_8);
+    return image_data_raw.convertFormat(sdl3.pixels.Format.packed_abgr_8_8_8_8);
 }
 
 pub fn loadShader(
