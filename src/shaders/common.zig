@@ -252,56 +252,34 @@ inline fn runtimeAttributesFromCompileTimeAttributes(
     }
 }
 
-/// Sampler 2d type.
-const Sampler2d = *const anyopaque;
-
-/// Create a sampler 2d uniform.
+/// Sample a 2d sampler at a given UV.
 ///
 /// ## Function Parameters
 /// * `set`: The descriptor set.
 /// * `bind`: The binding slot.
+/// * `uv`: The UV to sample at.
 ///
 /// ## Return Value
-/// Returns a sampler that can be sampled with `textureSampler2d()`.
+/// Returns the sampled color value.
 pub fn sampler2d(
     comptime set: u32,
     comptime bind: u32,
-) Sampler2d {
-    return asm volatile (
-        \\%float        = OpTypeFloat 32
-        \\%img_type     = OpTypeImage %float 2D 0 0 0 1 Unknown
-        \\%sampler_type = OpTypeSampledImage %img_type
-        \\%sampler_ptr  = OpTypePointer UniformConstant %sampler_type
-        \\%tex          = OpVariable %sampler_ptr UniformConstant
-        \\                OpDecorate %tex DescriptorSet $set
-        \\                OpDecorate %tex Binding $bind
-        : [tex] "" (-> Sampler2d),
-        : [set] "c" (set),
-          [bind] "c" (bind),
-    );
-}
-
-/// Use a sampler2d to sample texture data.
-///
-/// ## Function Parameters
-/// * `sampler`: The sampler to sample the texture data from.
-/// * `uv`: The coordinates to sample.
-///
-/// ## Return Value
-/// Returns the RGBA normalized color data of the sample.
-pub inline fn textureSampler2d(
-    sampler: Sampler2d,
     uv: @Vector(2, f32),
 ) @Vector(4, f32) {
     return asm volatile (
         \\%float          = OpTypeFloat 32
+        \\%v4float        = OpTypeVector %float 4
         \\%img_type       = OpTypeImage %float 2D 0 0 0 1 Unknown
         \\%sampler_type   = OpTypeSampledImage %img_type
-        \\%v4float        = OpTypeVector %float 4
-        \\%loaded_sampler = OpLoad %sampler_type %sampler
+        \\%sampler_ptr    = OpTypePointer UniformConstant %sampler_type
+        \\%tex            = OpVariable %sampler_ptr UniformConstant
+        \\                  OpDecorate %tex DescriptorSet $set
+        \\                  OpDecorate %tex Binding $bind
+        \\%loaded_sampler = OpLoad %sampler_type %tex
         \\%ret            = OpImageSampleImplicitLod %v4float %loaded_sampler %uv
         : [ret] "" (-> @Vector(4, f32)),
-        : [sampler] "" (sampler),
-          [uv] "" (uv),
+        : [uv] "" (uv),
+          [set] "c" (set),
+          [bind] "c" (bind),
     );
 }
