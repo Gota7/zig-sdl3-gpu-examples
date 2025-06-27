@@ -27,11 +27,11 @@ pub inline fn declareVertexShaderVars(
         // Get extern pointers for each buffer attribute (so we can use as location later).
         var in_ptrs: [in_attribs.len]*addrspace(.input) const anyopaque = undefined;
         for (in_attribs, 0..) |attrib, i| {
-            in_ptrs[i] = @extern(*addrspace(.input) const attrib.type, .{ .name = attrib.name });
+            in_ptrs[i] = @extern(*addrspace(.input) const attrib.type, .{ .name = attrib.name ++ ".in" });
         }
         var out_ptrs: [out_attribs.len]*addrspace(.output) anyopaque = undefined;
         for (out_attribs, 0..) |attrib, i| {
-            out_ptrs[i] = @extern(*addrspace(.output) attrib.type, .{ .name = attrib.name });
+            out_ptrs[i] = @extern(*addrspace(.output) attrib.type, .{ .name = attrib.name ++ ".out" });
         }
 
         // Create fields in our return struct to use as our vertex attributes.
@@ -120,7 +120,7 @@ pub inline fn declareFragmentShaderVars(
         // Get extern pointers for each buffer attribute (so we can use as location later).
         var in_ptrs: [in_attribs.len]*addrspace(.input) const anyopaque = undefined;
         for (in_attribs, 0..) |attrib, i| {
-            in_ptrs[i] = @extern(*addrspace(.input) const attrib.type, .{ .name = attrib.name });
+            in_ptrs[i] = @extern(*addrspace(.input) const attrib.type, .{ .name = attrib.name ++ ".in" });
         }
 
         // Create fields in our return struct to use as our vertex attributes.

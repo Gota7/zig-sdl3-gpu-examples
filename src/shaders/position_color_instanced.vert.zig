@@ -20,7 +20,7 @@ export fn main() callconv(.spirv_vertex) void {
 
     // Use the instance index to offset the vertex.
     var pos = vars.vert_in_position.* * @as(@Vector(3, f32), @splat(0.25)) - @Vector(3, f32){ 0.75, 0.75, 0 };
-    pos[0] += @as(f32, @floatFromInt(std.gpu.vertex_index % 4)) * 0.5;
-    pos[1] += @as(f32, @floatFromInt(std.gpu.vertex_index / 4)) * 0.5;
+    pos[0] += @as(f32, @floatFromInt(std.gpu.instance_index % 4)) * 0.5;
+    pos[1] += @as(f32, @floatFromInt(std.gpu.instance_index / 4)) * 0.5;
     std.gpu.position_out.* = attributes.vert_out_position_type{ pos[0], pos[1], pos[2], 1 };
 }
