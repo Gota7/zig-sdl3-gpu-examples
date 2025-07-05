@@ -4,7 +4,7 @@
     .dependencies = .{
         .sdl3 = .{
             .url = "https://github.com/Gota7/zig-sdl3/archive/refs/heads/master.zip",
-            .hash = "sdl3-0.0.1-NmT1QxgLHADH3iLiD44LpAGHGP1M5vJ5cHFfaylBBXfK",
+            .hash = "sdl3-0.0.1-NmT1Q9w4HACobSKMy4Nr6Pxef11nQI4WZ-6lPUX1pxlE",
         },
     },
     .paths = .{

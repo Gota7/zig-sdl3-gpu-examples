@@ -71,26 +71,26 @@ fn sdlErr(
 /// Since SDL's logging callbacks must be C-compatible, you may have to wrap the `category` and `priority` to managed types for convenience.
 fn sdlLog(
     user_data: ?*anyopaque,
-    category: c_int,
-    priority: sdl3.c.SDL_LogPriority,
-    message: [*c]const u8,
-) callconv(.c) void {
+    category: ?sdl3.log.Category,
+    priority: ?sdl3.log.Priority,
+    message: [:0]const u8,
+) void {
     _ = user_data;
-    const category_managed = sdl3.log.Category.fromSdl(category);
-    const category_str: ?[]const u8 = if (category_managed) |val| switch (val.value) {
-        sdl3.log.Category.application.value => "Application",
-        sdl3.log.Category.errors.value => "Errors",
-        sdl3.log.Category.assert.value => "Assert",
-        sdl3.log.Category.system.value => "System",
-        sdl3.log.Category.audio.value => "Audio",
-        sdl3.log.Category.video.value => "Video",
-        sdl3.log.Category.render.value => "Render",
-        sdl3.log.Category.input.value => "Input",
-        sdl3.log.Category.testing.value => "Testing",
-        sdl3.log.Category.gpu.value => "Gpu",
+    const category_managed = category;
+    const category_str: ?[]const u8 = if (category_managed) |val| switch (val) {
+        sdl3.log.Category.application => "Application",
+        sdl3.log.Category.errors => "Errors",
+        sdl3.log.Category.assert => "Assert",
+        sdl3.log.Category.system => "System",
+        sdl3.log.Category.audio => "Audio",
+        sdl3.log.Category.video => "Video",
+        sdl3.log.Category.render => "Render",
+        sdl3.log.Category.input => "Input",
+        sdl3.log.Category.testing => "Testing",
+        sdl3.log.Category.gpu => "Gpu",
         else => null,
     } else null;
-    const priority_managed = sdl3.log.Priority.fromSdl(priority);
+    const priority_managed = priority;
     const priority_str: [:0]const u8 = if (priority_managed) |val| switch (val) {
         .trace => "Trace",
         .verbose => "Verbose",
@@ -103,7 +103,7 @@ fn sdlLog(
     if (category_str) |val| {
         std.debug.print("[{s}:{s}] {s}\n", .{ val, priority_str, message });
     } else {
-        std.debug.print("[Custom_{d}:{s}] {s}\n", .{ category, priority_str, message });
+        std.debug.print("[Custom_{?}:{s}] {s}\n", .{ category, priority_str, message });
     }
 }
 
@@ -116,13 +116,13 @@ pub fn main() !void {
     // Setup logging.
     sdl3.errors.error_callback = &sdlErr;
     sdl3.log.setAllPriorities(.info);
-    sdl3.log.setLogOutputFunction(sdlLog, null);
+    sdl3.log.setLogOutputFunction(anyopaque, sdlLog, null);
 
     // Setup SDL3.
-    defer sdl3.init.shutdown();
-    const init_flags = sdl3.init.Flags{ .video = true, .gamepad = true };
-    try sdl3.init.init(init_flags);
-    defer sdl3.init.quit(init_flags);
+    defer sdl3.shutdown();
+    const init_flags = sdl3.InitFlags{ .video = true, .gamepad = true };
+    try sdl3.init(init_flags);
+    defer sdl3.quit(init_flags);
 
     // Setup initial example.
     var example_index: usize = starting_example;
