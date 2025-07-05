@@ -66,9 +66,6 @@ fn sdlErr(
 /// * `category`: Which category SDL is logging under, for example "video".
 /// * `priority`: Which priority the log message is.
 /// * `message`: Actual message to log. This should not be `null`.
-///
-/// ## Remarks
-/// Since SDL's logging callbacks must be C-compatible, you may have to wrap the `category` and `priority` to managed types for convenience.
 fn sdlLog(
     user_data: ?*anyopaque,
     category: ?sdl3.log.Category,
@@ -76,22 +73,20 @@ fn sdlLog(
     message: [:0]const u8,
 ) void {
     _ = user_data;
-    const category_managed = category;
-    const category_str: ?[]const u8 = if (category_managed) |val| switch (val) {
-        sdl3.log.Category.application => "Application",
-        sdl3.log.Category.errors => "Errors",
-        sdl3.log.Category.assert => "Assert",
-        sdl3.log.Category.system => "System",
-        sdl3.log.Category.audio => "Audio",
-        sdl3.log.Category.video => "Video",
-        sdl3.log.Category.render => "Render",
-        sdl3.log.Category.input => "Input",
-        sdl3.log.Category.testing => "Testing",
-        sdl3.log.Category.gpu => "Gpu",
+    const category_str: ?[]const u8 = if (category) |val| switch (val) {
+        .application => "Application",
+        .errors => "Errors",
+        .assert => "Assert",
+        .system => "System",
+        .audio => "Audio",
+        .video => "Video",
+        .render => "Render",
+        .input => "Input",
+        .testing => "Testing",
+        .gpu => "Gpu",
         else => null,
     } else null;
-    const priority_managed = priority;
-    const priority_str: [:0]const u8 = if (priority_managed) |val| switch (val) {
+    const priority_str: [:0]const u8 = if (priority) |val| switch (val) {
         .trace => "Trace",
         .verbose => "Verbose",
         .debug => "Debug",
