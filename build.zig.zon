@@ -3,8 +3,8 @@
     .version = "0.0.0",
     .dependencies = .{
         .sdl3 = .{
-            .url = "https://github.com/Gota7/zig-sdl3/archive/refs/heads/master.zip",
-            .hash = "sdl3-0.0.1-NmT1QxgLHADH3iLiD44LpAGHGP1M5vJ5cHFfaylBBXfK",
+            .url = "git+https://github.com/Gota7/zig-sdl3#0f4174f3234732c8570b89616c76d7e73fb4ae66",
+            .hash = "sdl3-0.0.1-NmT1Q9w4HACobSKMy4Nr6Pxef11nQI4WZ-6lPUX1pxlE",
         },
     },
     .paths = .{
